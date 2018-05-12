@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.27428.2015
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureStorage.Common", "AzureStorage.Common\AzureStorage.Common.csproj", "{17581B42-1603-49E4-BE47-37B77C9FEF32}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogToBLob", "LogToBLob\LogToBLob.csproj", "{F06AD7D8-C6CC-48DD-BA4D-B0CA0A69D7D3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{17581B42-1603-49E4-BE47-37B77C9FEF32}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{17581B42-1603-49E4-BE47-37B77C9FEF32}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{17581B42-1603-49E4-BE47-37B77C9FEF32}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F06AD7D8-C6CC-48DD-BA4D-B0CA0A69D7D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F06AD7D8-C6CC-48DD-BA4D-B0CA0A69D7D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F06AD7D8-C6CC-48DD-BA4D-B0CA0A69D7D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F06AD7D8-C6CC-48DD-BA4D-B0CA0A69D7D3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

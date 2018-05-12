@@ -27,7 +27,7 @@ namespace AzureStorage.Common
         }
 
 
-        public  async Task<CloudBlobContainer> CreateBlobContainerAsync (string ContainerName,CloudStorageAccount StorageAcount)
+        private  async Task<CloudBlobContainer> CreateBlobContainerAsync (string ContainerName,CloudStorageAccount StorageAcount)
         {
             // Create the CloudBlobClient that represents the Blob storage endpoint for the storage account.
             CloudBlobClient cloudBlobClient = StorageAcount.CreateCloudBlobClient();
@@ -47,7 +47,7 @@ namespace AzureStorage.Common
             return cloudBlobContainer;
         }
 
-        public  async Task UploadFileAsync (CloudBlobContainer BlobContainer,string filePath)
+        private  async Task UploadFileAsync (CloudBlobContainer BlobContainer,string filePath)
         {
             // Get a reference to the blob address, then upload the file to the blob.
             // Use the value of localFileName for the blob name.
@@ -56,7 +56,7 @@ namespace AzureStorage.Common
             await cloudBlockBlob.UploadFromFileAsync(filePath);
         }
 
-        public static async Task ProcessAsync()
+        public  async Task ProcessAsync()
         {
             CloudStorageAccount storageAccount = null;
             CloudBlobContainer cloudBlobContainer = null;
@@ -144,32 +144,30 @@ namespace AzureStorage.Common
             }
         }
 
-
-        public  async Task<string> LogToAzure(string FilePath)
+        public  async Task<string> LogToAzure(string filePath)
         {
-            string sourceFile = null;
- 
             // Retrieve the connection string for use with the application. The storage connection string is stored
             // in an environment variable on the machine running the application called storageconnectionstring.
             // If the environment variable is created after the application is launched in a console or with Visual
             // Studio, the shell needs to be closed and reloaded to take the environment variable into account.
-
+            //_blobConnString ="DefaultEndpointsProtocol = https; AccountName = apobloblogs; AccountKey = T0VwUsUChxehS6ylEHeCHwijOx1Ql05wEJ2P4UDhBbrlh9Y1tE4HwbsMJpvyFn63TF5 / NErBQ8t0zA6Pa7E80w ==; EndpointSuffix = core.windows.net";
             // Check whether the connection string can be parsed.
-            if (CloudStorageAccount.TryParse(_blobConnString, out _storageAccount))
+           
+            if (CloudStorageAccount.TryParse("DefaultEndpointsProtocol=https;AccountName=apobloblogs;AccountKey=T0VwUsUChxehS6ylEHeCHwijOx1Ql05wEJ2P4UDhBbrlh9Y1tE4HwbsMJpvyFn63TF5/NErBQ8t0zA6Pa7E80w==;EndpointSuffix=core.windows.net", out _storageAccount))
             {
                 try
                 {
                    
-                    _cloudBlobContainer = await CreateBlobContainerAsync("AposLogOnBLob", _storageAccount);
+                    _cloudBlobContainer = await CreateBlobContainerAsync("AposLogOnBLob".ToLower(), _storageAccount);
 
                     // Create a file in your local MyDocuments folder to upload to a blob.
-                    string localPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                  //  string localPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
                     //string localFileName = "QuickStart_" + Guid.NewGuid().ToString() + ".txt";
-                    sourceFile = @"C:\\logTest.Log";
+                    
                     // Write text to the file.
-                    File.WriteAllText(sourceFile, "Hello, World!");                  
+                   // File.WriteAllText(sourceFile, "Hello, World!");                  
                 
-                    await UploadFileAsync(_cloudBlobContainer,sourceFile );
+                    await UploadFileAsync(_cloudBlobContainer, filePath);
 
                     // List the blobs in the container.
 
@@ -211,7 +209,7 @@ namespace AzureStorage.Common
                     //}
                    // Console.WriteLine("Deleting the local source file and local downloaded files");
                    // Console.WriteLine();
-                    File.Delete(sourceFile);
+                    File.Delete(filePath);
                     //File.Delete(destinationFile);
                 }
             }
