@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AzureStorage.Common;
+using System.IO;
+
 namespace LogToBLob
 {
     class Program
@@ -21,25 +23,29 @@ namespace LogToBLob
             //{
             //    Console.Write("Error On Download");
             //}
-            var res = ListBlobsAsync().GetAwaiter().GetResult();
-            // List the blobs in the container.
-            Console.WriteLine("Listing blobs in container.");
-            foreach (var blob in res)
-            {
-                Console.WriteLine(blob);
-            }
+            //var res = ListBlobsAsync().GetAwaiter().GetResult();
+            //// List the blobs in the container.
+            //Console.WriteLine("Listing blobs in container.");
+            //foreach (var blob in res)
+            //{
+            //    Console.WriteLine(blob);
+            //}
            
-            Console.Read();
-            Environment.Exit(0);
-
-            var msg = StoreFileAsync(args).GetAwaiter().GetResult();
-            Console.WriteLine(msg);
+            //Console.Read();
+           // Environment.Exit(0);
+            foreach (var file in GetFiles(""))
+            {
+                var msg = StoreFileAsync(file).GetAwaiter().GetResult();
+                Console.WriteLine(msg);
+            }
+           // var msg = StoreFileAsync(args).GetAwaiter().GetResult();
+           // Console.WriteLine(msg);
             Console.Read();
         }
 
-        static async Task<string> StoreFileAsync(string[] args)
+        static async Task<string> StoreFileAsync(string filePath)
         {       
-            var result =  await  _AzureLogger.UploadFileAsync(@"C:\\AzureLogs\\tesLog.log");
+            var result =  await  _AzureLogger.UploadFileAsync(filePath);
             return result;
         }
     
@@ -55,5 +61,20 @@ namespace LogToBLob
             var result = await _AzureLogger.ListBlobsAsync();
             return result;
         }
+
+        static List<string> GetFiles(string DirectoryPath)
+        {
+            try
+            {
+                return Directory.GetFiles(@"C:\\AzureLogs", "*.log").ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                Console.Read();
+                return new List<string>();
+            }
+        }
+                 
     }
 }
