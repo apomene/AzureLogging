@@ -23,9 +23,8 @@ namespace AzureStorage.Common
 
         public Common()
         {
-
+            _storageAccount = CloudStorageAccount.Parse("DefaultEndpointsProtocol=https;AccountName=apobloblogs;AccountKey=T0VwUsUChxehS6ylEHeCHwijOx1Ql05wEJ2P4UDhBbrlh9Y1tE4HwbsMJpvyFn63TF5/NErBQ8t0zA6Pa7E80w==;EndpointSuffix=core.windows.net");//, out _storageAccount))          
         }
-
 
         private  async Task<CloudBlobContainer> CreateBlobContainerAsync (string ContainerName,CloudStorageAccount StorageAcount)
         {
@@ -54,6 +53,52 @@ namespace AzureStorage.Common
             var fileName = Path.GetFileName(filePath);
             CloudBlockBlob cloudBlockBlob = BlobContainer.GetBlockBlobReference(fileName);
             await cloudBlockBlob.UploadFromFileAsync(filePath);
+        }
+
+        public async Task<bool> DownLoadFileAsync(string BlobName,string FilePath)
+        {
+            try
+            {               
+                // Create the CloudBlobClient that represents the Blob storage endpoint for the storage account.
+                CloudBlobClient cloudBlobClient = _storageAccount.CreateCloudBlobClient();
+
+
+                //var BlobContainer = await CreateBlobContainerAsync(BlobName, _storageAccount);
+                CloudBlobContainer BlobContainer = cloudBlobClient.GetContainerReference("aposlogonblobfcfbd685-f461-4c86-ad5d-42a52e9942a1");
+                CloudBlockBlob cloudBlockBlob = BlobContainer.GetBlockBlobReference(BlobName);
+                await cloudBlockBlob.DownloadToFileAsync(FilePath, FileMode.Create);
+                return true;
+               
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public async Task<List<string>> ListBlobsAsync()
+        {
+            BlobContinuationToken blobContinuationToken = null;
+            var res = new List<string>();
+            do
+            {
+                // Create the CloudBlobClient that represents the Blob storage endpoint for the storage account.
+                CloudBlobClient cloudBlobClient = _storageAccount.CreateCloudBlobClient();
+
+
+                //var BlobContainer = await CreateBlobContainerAsync(BlobName, _storageAccount);
+                CloudBlobContainer BlobContainer = cloudBlobClient.GetContainerReference("aposlogonblobfcfbd685-f461-4c86-ad5d-42a52e9942a1");
+
+                var results = await BlobContainer.ListBlobsSegmentedAsync(null, blobContinuationToken);
+                // Get the value of the continuation token returned by the listing call.
+                blobContinuationToken = results.ContinuationToken;
+                foreach (IListBlobItem item in results.Results)
+                {
+                    res.Add(item.Uri.ToString());
+                }
+            } while (blobContinuationToken != null); // Loop while the continuation token is not null.
+            return res;
+
         }
 
         public  async Task ProcessAsync()
@@ -144,7 +189,7 @@ namespace AzureStorage.Common
             }
         }
 
-        public  async Task<string> LogToAzure(string filePath)
+        public  async Task<string> UploadFileAsync(string filePath)
         {
             // Retrieve the connection string for use with the application. The storage connection string is stored
             // in an environment variable on the machine running the application called storageconnectionstring.
