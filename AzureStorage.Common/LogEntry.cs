@@ -1,12 +1,10 @@
 ﻿using System;
-
 using Newtonsoft.Json;
-
 using Microsoft.WindowsAzure.Storage.Table;
 
 
 
-namespace AzureOuterLogs.Common
+namespace AzureStorage.Common
 {
 
     public class baseLogEntry : TableEntity
